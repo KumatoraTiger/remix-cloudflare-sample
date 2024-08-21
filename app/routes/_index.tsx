@@ -1,4 +1,5 @@
-import type { MetaFunction } from "@remix-run/cloudflare";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import { authenticator } from "~/services/auth.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,10 +11,16 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export async function loader({ request }: LoaderFunctionArgs) {
+  return await authenticator.isAuthenticated(request, {
+    failureRedirect: "/login",
+  });
+}
+
 export default function Index() {
   return (
     <div className="font-sans p-4">
-      <h1 className="text-3xl">Hi! Welcome to Remix on Cloudflare</h1>
+      <h1 className="text-3xl">Welcome to Remix on Cloudflare</h1>
       <ul className="list-disc mt-4 pl-6 space-y-2">
         <li>
           <a
